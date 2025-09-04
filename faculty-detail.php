@@ -43,7 +43,7 @@ $conn->close();
             </div>
         </div>
     <?php else: ?>
-        <p class="text-center text-red-500 font-semibold">Faculty not found or invalid ID.</p>
+        <p class="text-center pt-10 text-red-500 font-semibold">Faculty not found or invalid ID.</p>
     <?php endif; ?>
 </div>
 
