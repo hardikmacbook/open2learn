@@ -18,8 +18,10 @@ $conn->close();
 ?>
 
 <div class="max-w-3xl mx-auto px-4 py-16">
+     <!-- Optional: Back button -->
+    
     <?php if ($faculty): ?>
-        <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200 flex flex-col items-center">
+        <div class="bg-gradient-to-br from-blue-70 via-purple-100 to-indigo-100 rounded-xl shadow-lg p-8 border border-gray-200 flex flex-col items-center mt-10">
             <?php if (!empty($faculty['image'])): ?>
                 <img src="<?= htmlspecialchars($faculty['image']) ?>" alt="<?= htmlspecialchars($faculty['name']) ?>" class="faculty-image" style="max-width:240px;max-height:320px;">
             <?php else: ?>
@@ -43,7 +45,7 @@ $conn->close();
             </div>
         </div>
     <?php else: ?>
-        <p class="text-center pt-10 text-red-500 font-semibold">Faculty not found or invalid ID.</p>
+        <p class="text-center text-red-500 font-semibold">Faculty not found or invalid ID.</p>
     <?php endif; ?>
 </div>
 
