@@ -9,7 +9,6 @@
   <title>Open2Learn</title>
 </head>
 <body class="min-h-screen bg-gray-100">
-
 <!-- Floating Glass Header -->
 <header class="fixed top-4 left-1/2 transform -translate-x-1/2 lg:w-[40%] max-w-6xl z-50">
   <div class="backdrop-blur-xl bg-white/40 border border-white/20 shadow-lg rounded-2xl px-6 py-3 flex justify-between items-center gap-3">
@@ -80,6 +79,5 @@
     overlay.classList.add("hidden");
   });
 </script>
-
 </body>
 </html>
