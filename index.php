@@ -140,13 +140,9 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <?php
-      // Use API helper function to fetch courses data
-      require_once './includes/api_helper.php'; // Include your API helper functions file if needed
-
-      $allCoursesData = fetchCoursesData();  // Fetch data from API
+      require_once './includes/api_helper.php';
+      $allCoursesData = fetchCoursesData();
       $courses = $allCoursesData['courses'];
-
-      // Display only the first 3 courses
       $featuredCourses = array_slice($courses, 0, 3);
 
       foreach ($featuredCourses as $course) {
@@ -181,7 +177,6 @@
             <div class="flex justify-between items-center">
               <div>
                 <?php
-                // Count total years
                 $totalYears = count($course['years'] ?? []);
                 ?>
                 <span class="bg-[#1E3A8A] text-white text-xs px-2 py-1 rounded-full">
