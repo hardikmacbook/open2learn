@@ -17,9 +17,8 @@ $faculty = $result && $result->num_rows > 0 ? $result->fetch_assoc() : null;
 $conn->close();
 ?>
 
-<div class="max-w-3xl mx-auto px-4 py-16">
+<div class="max-w-3xl mx-auto px-4 py-16">                  
      <!-- Optional: Back button -->
-    
     <?php if ($faculty): ?>
         <div class="bg-gradient-to-br from-blue-70 via-purple-100 to-indigo-100 rounded-xl shadow-lg p-8 border border-gray-200 flex flex-col items-center mt-10">
             <?php if (!empty($faculty['image'])): ?>
