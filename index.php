@@ -12,6 +12,7 @@
 <body>
   <?php include 'includes/header.php'; ?>
   <?php include 'includes/api_helper.php'; ?>
+  <?php require_once 'includes/db_connect.php'; ?>
 
   <!-- Hero Section -->
   <div class="relative w-full h-[600px] overflow-hidden">
@@ -21,7 +22,7 @@
         <img src="https://static.vecteezy.com/system/resources/thumbnails/006/296/747/small_2x/bookshelf-with-books-biography-adventure-novel-poem-fantasy-love-story-detective-art-romance-banner-for-library-book-store-genre-of-literature-illustration-in-flat-style-vector.jpg" alt="University Campus" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-gradient-to-r from-black/100 to-transparent flex items-center">
           <div class="text-white max-w-2xl ml-16">
-            <h1 class="text-5xl font-bold mb-4">Welcome to Course Portal</h1>
+            <h1 class="text-5xl font-bold mb-4">Welcome to Open2Learn</h1>
             <p class="text-xl mb-8">Access quality education materials anytime, anywhere</p>
             <a href="courses.php" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 inline-flex items-center">
               <span>Explore Courses</span>
@@ -217,24 +218,9 @@
 
       <!-- Features -->
       <?php
-      $servername = "localhost"; // you can change it to your server name
-      $username = "root"; // enter you MySQL User Name
-      $password = ""; // enter your hosting panel password
-      $dbname = "open2learn"; // your database name
-
-      // Create connection
-      $conn = new mysqli($servername, $username, $password, $dbname);
-
-      // Check connection
-      if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-      }
-
-      // Fetch features data
-      $sql = "SELECT * FROM features";
-      $result = $conn->query($sql);
-
-      if ($result->num_rows > 0) {
+      // Fetch features data using shared connection
+      $result = $conn->query("SELECT * FROM features");
+      if ($result && $result->num_rows > 0) {
         echo '<div class="grid grid-cols-1 md:grid-cols-3 gap-8">';
         while ($row = $result->fetch_assoc()) {
           echo '<div class="p-8 border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1E3A8A] transition duration-300">';
@@ -247,46 +233,23 @@
       } else {
         echo "No features available.";
       }
-
-      $conn->close();
       ?>
     </div>
   </div>
 
   <!-- Reviews Section -->
 
-
   <?php
-  $servername = "localhost"; // you can change it to your server name
-  $username = "root"; // enter you MySQL User Name
-  $password = ""; // enter your hosting panel password
-  $dbname = "open2learn"; // your database name
-
-  // कनेक्शन बनाएं
-  $conn = new mysqli($servername, $username, $password, $dbname);
-
-  // कनेक्शन चेक करें
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-  }
-
-  // अपनी टेबल का नाम मान लेते हैं "reviews"
-  $sql = "SELECT name, review, rating FROM reviews";
-  $result = $conn->query($sql);
-
+  // Fetch reviews using shared connection
+  $result = $conn->query("SELECT name, review, rating FROM reviews ORDER BY id DESC");
   $valid_reviews = [];
-  if ($result->num_rows > 0) {
-    // हर एक रो को ऐरे में डालें
+  if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-      // वैलिड होने पर ही ऐरे में जोड़ें, जैसे JSON में था
       if (isset($row['name'], $row['review'], $row['rating'])) {
         $valid_reviews[] = $row;
       }
     }
   }
-
-  // कनेक्शन बंद करें
-  $conn->close();
   ?>
 
   <!-- Swiper CSS -->
@@ -383,6 +346,7 @@
 
 
   <?php include 'includes/footer.php'; ?>
+  <?php if (isset($conn) && $conn instanceof mysqli) { $conn->close(); } ?>
 </body>
 
 </html>

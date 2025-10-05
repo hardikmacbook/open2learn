@@ -9,10 +9,16 @@
   <title>Open2Learn</title>
 </head>
 <body class="min-h-screen bg-gray-100">
+  <?php
+  // Start session if not already started
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+  ?>
   <!-- Floating Glass Header -->
 
-<header class="fixed top-4 left-1/2 transform -translate-x-1/2 lg:w-[40%] max-w-6xl z-50">
-  <div class="backdrop-blur-xl bg-white/40 border border-white/20 shadow-lg rounded-2xl px-6 py-3 flex justify-between items-center gap-3">
+<header class="fixed top-4 left-1/2 transform -translate-x-1/2 lg:w-[50%] max-w-6xl z-50">
+  <div class="backdrop-blur-xl bg-white/40 border border-white/20 shadow-lg rounded-2xl px-6 py-3 flex justify-between items-center gap-1">
     
   <!-- Logo -->
     <a href="index.php" class="text-xl font-bold text-gray-900 flex items-center">
@@ -21,12 +27,17 @@
     </a>
 
   <!-- Desktop Menu -->
-    <nav class="hidden md:flex space-x-6 text-gray-800">
-      <a href="index.php" class="hover:text-[#1E3A8A] transition">Home</a>
-      <a href="about.php" class="hover:text-[#1E3A8A] transition">About</a>
-      <a href="courses.php" class="hover:text-[#1E3A8A] transition">Courses</a>
-      <a href="faculty.php" class="hover:text-[#1E3A8A] transition">Faculty</a>
-      <a href="contact.php" class="hover:text-[#1E3A8A] transition">Contact</a>
+    <nav class="hidden md:flex space-x-4 text-gray-800">
+      <a href="index.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">Home</a>
+      <a href="about.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">About</a>
+      <a href="courses.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">Courses</a>
+      <a href="faculty.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">Faculty</a>
+      <a href="contact.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">Contact</a>
+      <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+        <a href="logout.php" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Logout</a>
+      <?php else: ?>
+        <a href="login.php" class="px-3 py-2 hover:text-[#1E3A8A] transition">Login</a>
+      <?php endif; ?>
     </nav>
 
   <!-- Mobile Button -->
@@ -46,11 +57,17 @@
   </div>
 
   <nav class="flex flex-col p-5 space-y-5 text-lg font-medium text-gray-800">
-    <a href="index.php" class="hover:text-[#1E3A8A] transition">🏠 Home</a>
-    <a href="about.php" class="hover:text-[#1E3A8A] transition">ℹ️ About</a>
-    <a href="courses.php" class="hover:text-[#1E3A8A] transition">📚 Courses</a>
-    <a href="faculty.php" class="hover:text-[#1E3A8A] transition">👨‍🏫 Faculty</a>
-    <a href="contact.php" class="hover:text-[#1E3A8A] transition">📞 Contact</a>
+    <a href="index.php" class="p-3 hover:bg-gray-100 rounded-lg hover:text-[#1E3A8A] transition">🏠 Home</a>
+    <a href="about.php" class="p-3 hover:bg-gray-100 rounded-lg hover:text-[#1E3A8A] transition">ℹ️ About</a>
+    <a href="courses.php" class="p-3 hover:bg-gray-100 rounded-lg hover:text-[#1E3A8A] transition">📚 Courses</a>
+    <a href="faculty.php" class="p-3 hover:bg-gray-100 rounded-lg hover:text-[#1E3A8A] transition">👨‍🏫 Faculty</a>
+    <a href="contact.php" class="p-3 hover:bg-gray-100 rounded-lg hover:text-[#1E3A8A] transition">📞 Contact</a>
+    <?php if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+      <a href="logout.php" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">🚪 Logout</a>
+    <?php else: ?>
+      <a href="login.php" class="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">🔑 Login</a>
+      <a href="register.php" class="p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">📝 Register</a>
+    <?php endif; ?>
   </nav>
 </div>
 

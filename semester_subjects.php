@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include 'includes/header.php';
 include 'includes/api_helper.php';
 
@@ -55,7 +58,7 @@ $subjectCount = count($semester['subjects'] ?? []);
     <div class="absolute inset-0 opacity-10 pointer-events-none select-none">
         <div class="absolute inset-0"
              style="background-image: radial-gradient(circle at 25% 25%, #1E3A8A 0%, transparent 50%),
-             radial-gradient(circle at 75% 75%, #6366F1 0%, transparent 50%);"></div>
+                       radial-gradient(circle at 75% 75%, #6366F1 0%, transparent 50%);"></div>
     </div>
 
     <div class="relative max-w-7xl mx-auto px-6 py-10">
@@ -64,7 +67,7 @@ $subjectCount = count($semester['subjects'] ?? []);
             <a href="year_semesters.php?course_id=<?= urlencode($courseId) ?>&year=<?= urlencode($yearNumber) ?>"
                class="inline-flex items-center text-[#1E3A8A] hover:text-[#BFA14A] font-medium transition-all duration-200 group mt-10">
                 <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Back to Semesters
             </a>
@@ -112,7 +115,7 @@ $subjectCount = count($semester['subjects'] ?? []);
 
         <?php if (!empty($semester['subjects'])): ?>
             <!-- Dynamic Grid Layout based on subject count -->
-            <div class="<?php 
+            <div class="<?php
                 if ($subjectCount == 1) {
                     echo 'flex justify-center';
                 } elseif ($subjectCount == 2) {
@@ -121,27 +124,18 @@ $subjectCount = count($semester['subjects'] ?? []);
                     echo 'grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start';
                 }
             ?>">
-                <?php 
-                    $hasUnits = false;
-                    foreach ($semester['subjects'] as $subject) {
-                        if (!empty($subject['units'])) {
-                            $hasUnits = true;
-                            break;
-                        }
-                    }
-                ?>
                 <?php foreach ($semester['subjects'] as $subject): ?>
-                    <div class="group relative flex flex-col bg-white rounded-3xl shadow-xl border border-gray-100 transform transition-all duration-300 hover:-translate-y-2 select-text <?php 
+                    <div class="group relative flex flex-col bg-white rounded-3xl shadow-xl border border-gray-100 transform transition-all duration-300 hover:-translate-y-2 select-text <?php
                         if ($subjectCount == 1) echo 'max-w-md w-full h-[600px]';
                         elseif ($subjectCount == 2) echo 'w-full h-[600px]';
                         else echo 'h-[600px]';
                     ?>">
-                        <!-- Subject Image (FIXED) -->
+                        <!-- Subject Image -->
                         <div class="h-full w-full rounded-xl overflow-hidden mb-6 relative">
                             <?php if (!empty($subject['image'])): ?>
                                 <img src="<?= htmlspecialchars($subject['image']) ?>" alt="<?= htmlspecialchars($subject['title']) ?>"
-                                     class="w-[400px] h-full object-cover hover:scale-105 transition-transform duration-500"
-                                     onerror="this.onerror=null;this.src='images/default-placeholder.png';">
+                                    class="w-[400px] h-full object-cover hover:scale-105 transition-transform duration-500"
+                                    onerror="this.onerror=null;this.src='images/default-placeholder.png';">
                             <?php else: ?>
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 relative">
                                     <!-- Decorative pattern -->
@@ -160,27 +154,38 @@ $subjectCount = count($semester['subjects'] ?? []);
                             <?php endif; ?>
                         </div>
 
-                        <!-- Subject Info (optionally, add pt-6 here for spacing) -->
+                        <!-- Subject Info -->
                         <div class="flex-grow px-6 pt-0">
                             <h3 class="text-2xl font-bold text-gray-900 mb-3 leading-tight"><?= htmlspecialchars($subject['title']) ?></h3>
                             <p class="text-gray-600 leading-relaxed line-clamp-3"><?= htmlspecialchars($subject['description']) ?></p>
                         </div>
 
-                        <!-- Download Buttons -->
+                        <!-- Download Buttons Section -->
                         <div class="mt-auto px-6 pb-6 space-y-3 pt-2">
-                            <!-- Complete Subject PDF Download -->
-                            <a target="_blank" href="<?= htmlspecialchars($subject['pdf']) ?>" download
-                               class="inline-flex items-center justify-center w-full px-5 py-3 bg-[#1E3A8A] text-white font-semibold rounded-xl hover:bg-[#BFA14A] shadow-lg transition-all duration-200 group">
-                                <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                                Google Drive
-                            </a>
-                            
+                            <!-- Google Drive PDF download (login check) -->
+                            <?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+                                <a target="_blank" href="<?= htmlspecialchars($subject['pdf']) ?>" download
+                                    class="inline-flex items-center justify-center w-full px-5 py-3 bg-[#1E3A8A] text-white font-semibold rounded-xl hover:bg-[#BFA14A] shadow-lg transition-all duration-200 group">
+                                    <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Google Drive
+                                </a>
+                            <?php else: ?>
+                                <a href="login.php"
+                                    class="inline-flex items-center justify-center w-full px-5 py-3 bg-gray-300 text-gray-600 font-semibold rounded-xl shadow-lg hover:bg-[#BFA14A] cursor-pointer">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Login to unlock
+                                </a>
+                            <?php endif; ?>
+
+                            <!-- Units PDF download (login check) -->
                             <?php if (!empty($subject['units'])): ?>
                                 <div class="mt-4">
                                     <button onclick="toggleUnits('<?= htmlspecialchars($subject['id']) ?>')" 
-                                                class="w-full px-4 py-2 bg-gray-100 hover:bg-[#BFA14A]/20 text-gray-700 font-medium rounded-lg transition-colors duration-200 flex items-center justify-between">
+                                        class="w-full px-4 py-2 bg-gray-100 hover:bg-[#BFA14A]/20 text-gray-700 font-medium rounded-lg transition-colors duration-200 flex items-center justify-between">
                                         <span>View Units (<?= count($subject['units']) ?>)</span>
                                         <svg id="arrow-<?= htmlspecialchars($subject['id']) ?>" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -189,13 +194,24 @@ $subjectCount = count($semester['subjects'] ?? []);
                                     <div id="units-<?= htmlspecialchars($subject['id']) ?>" class="overflow-hidden transition-all duration-300 max-h-0">
                                         <div class="space-y-2 bg-gray-50 p-4 rounded-xl mt-3 max-h-40 overflow-y-auto custom-scrollbar">
                                             <?php foreach ($subject['units'] as $unit): ?>
-                                                <a target="_blank" href="<?= htmlspecialchars($unit['pdf']) ?>" download
-                                                   class="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-[#BFA14A]/10 hover:border-[#BFA14A]/30 transition-all duration-200 group">
-                                                    <span class="font-medium text-gray-800 text-sm">Unit <?= htmlspecialchars($unit['unit_number']) ?>: <?= htmlspecialchars($unit['title']) ?></span>
-                                                    <svg class="w-4 h-4 text-[#1E3A8A] group-hover:text-[#BFA14A] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                                    </svg>
-                                                </a>
+                                                <?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+                                                    <a target="_blank" href="<?= htmlspecialchars($unit['pdf']) ?>" download
+                                                        class="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-[#BFA14A]/10 hover:border-[#BFA14A]/30 transition-all duration-200 group">
+                                                        <span class="font-medium text-gray-800 text-sm">Unit <?= htmlspecialchars($unit['unit_number']) ?>: <?= htmlspecialchars($unit['title']) ?></span>
+                                                        <svg class="w-4 h-4 text-[#1E3A8A] group-hover:text-[#BFA14A] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                        </svg>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a href="login.php"
+                                                        class="flex items-center justify-between w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg text-gray-600 cursor-pointer hover:bg-[#BFA14A]/30 transition-all duration-200 group">
+                                                        <span class="font-medium text-gray-600 text-sm">Unit <?= htmlspecialchars($unit['unit_number']) ?>: <?= htmlspecialchars($unit['title']) ?></span>
+                                                        <svg class="w-4 h-4 text-gray-500 group-hover:text-[#BFA14A] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                        </svg>
+                                                        <span class="ml-2">Login to unlock</span>
+                                                    </a>
+                                                <?php endif; ?>
                                             <?php endforeach; ?>
                                         </div>
                                     </div>
@@ -205,7 +221,6 @@ $subjectCount = count($semester['subjects'] ?? []);
                     </div>
                 <?php endforeach; ?>
             </div>
-
             <!-- JavaScript for collapsible units -->
             <script>
                 function toggleUnits(subjectId) {
@@ -213,45 +228,26 @@ $subjectCount = count($semester['subjects'] ?? []);
                     const arrow = document.getElementById('arrow-' + subjectId);
 
                     if (unitsDiv.style.maxHeight === '0px' || unitsDiv.style.maxHeight === '') {
-                        // Open: Set max-height to a fixed reasonable height (160px for max-h-40)
                         unitsDiv.style.maxHeight = '160px';
                         arrow.style.transform = 'rotate(180deg)';
                     } else {
-                        // Close: Set max-height to 0
                         unitsDiv.style.maxHeight = '0px';
                         arrow.style.transform = 'rotate(0deg)';
                     }
                 }
             </script>
-
             <!-- Custom scrollbar styles -->
             <style>
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: #1E3A8A;
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #1E3A8A;
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #1E3A8A;
-                }
-                .line-clamp-3 {
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
+                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: #1E3A8A; border-radius: 3px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #1E3A8A; border-radius: 3px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #1E3A8A; }
+                .line-clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
             </style>
-
         <?php else: ?>
             <!-- Empty State -->
             <div class="text-center py-20">
                 <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-8 relative">
-                    <!-- Decorative elements -->
                     <div class="absolute -top-2 -right-2 w-6 h-6 bg-blue-200 rounded-full"></div>
                     <div class="absolute -bottom-2 -left-2 w-4 h-4 bg-purple-200 rounded-full"></div>
                     <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
