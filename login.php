@@ -101,7 +101,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         body, html {
             margin: 0;
             padding: 0;
-            /* Do not set height 100% to avoid full screen flex */
         }
 
         .container {
